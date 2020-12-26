@@ -30,11 +30,11 @@ exit(1);}
 
 #define engine_name "CeeChess_UCIport"
 #define engine_author "Tom Reinitz, USA - Hamza Inan, Tur"
-#define engine_ver "1.3.3-dev"
+#define engine_ver "1.4-dev"
 #define BRD_SQ_NUM 120
 #define MAXGAMEMOVES 2048
 #define MAXPOSITIONMOVES 256
-#define MAXDEPTH 99
+#define MAXDEPTH 60
 #define START_FEN  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define INFINITE 30000
 #define ISMATE (INFINITE - MAXDEPTH)
