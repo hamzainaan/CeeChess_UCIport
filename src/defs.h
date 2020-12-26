@@ -29,7 +29,7 @@ exit(1);}
 					((U64)rand() & 0xf) << 60 )
 
 #define engine_name "CeeChess_UCIport"
-#define engine_author "Tom Reinitz, USA - Hamza Inan, Tur"
+#define engine_author "Tom Reinitz, USA - Hamza Inan, TUR"
 #define engine_ver "1.4-dev"
 #define BRD_SQ_NUM 120
 #define MAXGAMEMOVES 2048
