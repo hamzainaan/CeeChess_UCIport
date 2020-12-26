@@ -1,5 +1,5 @@
 exe = cee
-ver = 1.3.3-dev
+ver = 1.4-dev
 src = attack.c bitboards.c board.c data.c evaluate.c \
       hashkeys.c init.c io.c makemove.c main.c misc.c \
       movegen.c perft.c pv.c search.c uci.c
