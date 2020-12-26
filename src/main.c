@@ -5,7 +5,7 @@
 
 int main() {
 
-	system("CeeChess 1.4-dev by Tom Reinitz, Hamza Inan");
+	system("title CeeChess 1.4-dev by Tom Reinitz, Hamza Inan");
 	printf("%s %s by %s", engine_name, engine_ver, engine_author);
 	AllInit();
 	printf("\ninfo string Initialization successfully done!\n");
