@@ -5,10 +5,11 @@
 
 int main() {
 
-		printf("%s %s by %s", engine_name, engine_ver, engine_author);
-		AllInit();
-		printf("\ninfo string Initialization successfully done!\n");
-		S_BOARD pos[1];
+	system("CeeChess 1.4-dev by Tom Reinitz, Hamza Inan");
+	printf("%s %s by %s", engine_name, engine_ver, engine_author);
+	AllInit();
+	printf("\ninfo string Initialization successfully done!\n");
+	S_BOARD pos[1];
     	S_SEARCHINFO info[1];
     	info->quit = FALSE;
 		pos->HashTable->pTable = NULL;
