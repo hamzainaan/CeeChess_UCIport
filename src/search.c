@@ -103,10 +103,6 @@ static void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info) {
 }
 
 static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
-	
-	if(( info->nodes & 2047 ) == 0) {
-		CheckUp(info);
-	}
 
 	ASSERT(CheckBoard(pos));
 	ASSERT(beta>alpha);
@@ -119,13 +115,6 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 
 	if(pos->ply > MAXDEPTH - 1) {
 		return EvalPosition(pos);
-	}
-
-	// Mate Distance Pruning
-	alpha = MAX(alpha, -INFINITE + pos->ply);
-	beta = MIN(beta, INFINITE - pos->ply);
-	if (alpha >= beta) {
-		return alpha;
 	}
 
 	int Score = EvalPosition(pos);
@@ -141,11 +130,11 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 	}
 
 	S_MOVELIST list[1];
-    GenerateAllCaps(pos,list);
+    	GenerateAllCaps(pos,list);
 
-    int MoveNum = 0;
-	int Legal = 0;
-	Score = -INFINITE;
+   	 int MoveNum = 0;
+	 int Legal = 0;
+	 Score = -INFINITE;
 
 	for(MoveNum = 0; MoveNum < list->count; ++MoveNum) {
 
@@ -157,7 +146,7 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 
 		Legal++;
 		Score = -Quiescence( -beta, -alpha, pos, info);
-        TakeMove(pos);
+        	TakeMove(pos);
 
 		if(info->stopped == TRUE) {
 			return 0;
@@ -190,8 +179,6 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 
 	int InCheck = SqAttacked(pos->KingSq[pos->side],pos->side^1,pos);
 	
-
-
 	if(depth <= 0) {
 		return Quiescence(alpha, beta, pos, info);
 	}
@@ -204,9 +191,8 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 		return EvalPosition(pos);
 	}
 
-	// Mate Distance Pruning (finds mates more quickly)
-	alpha = MAX(alpha, -INFINITE + pos->ply);
-	beta = MIN(beta, INFINITE - pos->ply);
+	alpha = MAX(MATED + pos->ply, alpha);
+	beta = MIN(MATE - pos->ply, beta);
 	if (alpha >= beta) {
 		return alpha;
 	}
@@ -253,9 +239,9 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 	}
 
 	S_MOVELIST list[1];
-  GenerateAllMoves(pos,list);
+  	GenerateAllMoves(pos,list);
 
-  int MoveNum = 0;
+  	int MoveNum = 0;
 	int Legal = 0;
 	int OldAlpha = alpha;
 	int BestMove = NOMOVE;
@@ -386,16 +372,16 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 
 	int bestMove = NOMOVE;
 	int bestScore = -INFINITE;
-	int currentDepth = 7;
+	int currentDepth = 0;
 	int pvMoves = 0;
 	int pvNum = 0;
 
 	ClearForSearch(pos,info);
 
-	// iterative deepening
 	while(currentDepth <= info->depth) {
 		currentDepth++;
-		bestScore = AlphaBeta(-INFINITE, INFINITE, currentDepth-4, pos, info, TRUE, TRUE);
+		bestScore = AlphaBeta(-INFINITE, INFINITE, currentDepth, pos, info, TRUE, TRUE);
+		const char *bound = bestScore >= beta ? "lowerbound" : bestScore <= alpha ? "upperbound" : "";
 
 		if(info->stopped == TRUE) {
 			break;
@@ -403,13 +389,14 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 
 		pvMoves = GetPvLine(currentDepth, pos);
 		bestMove = pos->PvArray[0];
-		if (abs(bestScore) > ISMATE) {
-				bestScore = (bestScore > 0 ? INFINITE - bestScore + 1 : -INFINITE - bestScore) / 2;
-				printf("info depth %d score mate %d nodes %ld time %d ",
-					currentDepth,bestScore,info->nodes,GetTimeMs()-info->starttime);
+		if (abs(bestScore) > MATE_IN_MAX_PLY) {
+				bestScore = bestScore <= MATED_IN_MAX_PLY ? ((MATED - bestScore) / 2) : ((MATE - bestScore + 1) / 2);
+				if(bestScore == 0) break; //to avoid printing "info depth ... mate 0"
+				printf("info depth %d score mate %d %s nodes %ld time %d ",
+					currentDepth,bestScore,bound,info->nodes,GetTimeMs()-info->starttime);
 		} else {
-			printf("info depth %d score cp %d nodes %ld time %d ",
-				currentDepth,bestScore,info->nodes,GetTimeMs()-info->starttime);
+			printf("info depth %d score cp %d %s nodes %ld time %d ",
+				currentDepth,bestScore,bound,info->nodes,GetTimeMs()-info->starttime);
 		}
 			pvMoves = GetPvLine(currentDepth, pos);
 			printf("pv");
