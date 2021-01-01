@@ -36,8 +36,11 @@ exit(1);}
 #define MAXPOSITIONMOVES 256
 #define MAXDEPTH 60
 #define START_FEN  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-#define INFINITE 30000
-#define ISMATE (INFINITE - MAXDEPTH)
+#define INFINITE 32001
+#define MATE_IN_MAX_PLY 32000 - MAXDEPTH
+#define MATED_IN_MAX_PLY -32000 + MAXDEPTH
+#define MATE 32000
+#define MATED -32000
 #define FROMSQ(m) ((m) & 0x7F)
 #define TOSQ(m) (((m)>>7) & 0x7F)
 #define CAPTURED(m) (((m)>>14) & 0xF)
