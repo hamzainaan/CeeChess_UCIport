@@ -381,7 +381,7 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 	while(currentDepth <= info->depth) {
 		currentDepth++;
 		bestScore = AlphaBeta(-INFINITE, INFINITE, currentDepth, pos, info, TRUE, TRUE);
-		const char *bound = bestScore >= beta ? "lowerbound" : bestScore <= alpha ? "upperbound" : "";
+		char bound[] = bestScore >= beta ? "lowerbound" : bestScore <= alpha ? "upperbound" : "";
 
 		if(info->stopped == TRUE) {
 			break;
